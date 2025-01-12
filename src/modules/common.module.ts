@@ -1,6 +1,7 @@
+import { RequestExceptionFilter } from '@/filters/request-exception.filter';
 import { PrismaService } from '@/services/prisma.service';
 import { Global, Module, ValidationPipe } from '@nestjs/common';
-import { APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 
 @Global()
 @Module({
@@ -13,6 +14,10 @@ import { APP_PIPE } from '@nestjs/core';
           whitelist: true,
         });
       },
+    },
+    {
+      provide: APP_FILTER,
+      useClass: RequestExceptionFilter,
     },
   ],
   exports: [PrismaService],

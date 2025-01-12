@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { UserRepository } from '@/repositories/user.repository';
 import { SignUpDto } from '@/dtos/auth/sign-up.dto';
 import { encrypt } from '@/utils/encryption.util';
+import { RequestException } from '@/exceptions/request.exception';
+import { ErrorMessage } from '@/constants/error-message';
 
 @Injectable()
 export class AuthService {
@@ -11,8 +13,10 @@ export class AuthService {
     const user = await this._userRepository.findByEmail(signUp.email);
 
     if (user) {
-      // TODO: Internacionalizar o erro
-      throw new Error('User already exists');
+      throw new RequestException(
+        ErrorMessage.EMAIL_ALREADY_EXISTS,
+        HttpStatus.CONFLICT,
+      );
     }
 
     signUp.password = await encrypt(signUp.password);
