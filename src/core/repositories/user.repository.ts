@@ -6,11 +6,22 @@ import { User } from '@prisma/client';
 export class UserRepository {
   constructor(private readonly _prisma: PrismaService) {}
 
-  findByEmailOrUsername(emailOrUsername: string): Promise<User> {
+  findByEmail(email: string): Promise<User> {
     return this._prisma.user.findFirst({
       where: {
-        OR: [{ email: emailOrUsername }, { username: emailOrUsername }],
+        email,
       },
+    });
+  }
+
+  create(
+    user: Pick<
+      User,
+      'first_name' | 'last_name' | 'email' | 'password' | 'picture'
+    >,
+  ): Promise<User> {
+    return this._prisma.user.create({
+      data: user,
     });
   }
 }

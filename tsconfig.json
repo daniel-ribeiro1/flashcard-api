@@ -11,11 +11,13 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
-      "@/services/*": ["./src/core/services/*"],
-      "@/repositories/*": ["./src/core/repositories/*"],
+      "@/dtos/*": ["./src/common/dtos/*"],
+      "@/utils/*": ["./src/common/utils/*"],
       "@/controllers/*": ["./src/controllers/*"],
+      "@/modules": ["./src/modules"],
       "@/modules/*": ["./src/modules/*"],
-      "@/modules": ["./src/modules"]
+      "@/repositories/*": ["./src/core/repositories/*"],
+      "@/services/*": ["./src/core/services/*"],
     },
     "incremental": true,
     "skipLibCheck": true,
