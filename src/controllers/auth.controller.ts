@@ -1,4 +1,6 @@
+import { Serialize } from '@/decorators/serialize.decorator';
 import { SignUpDto } from '@/dtos/auth/sign-up.dto';
+import { UserDto } from '@/dtos/users/users.dto';
 import { AuthService } from '@/services/auth.service';
 import { Body, Controller, Post } from '@nestjs/common';
 import { User } from '@prisma/client';
@@ -7,7 +9,7 @@ import { User } from '@prisma/client';
 export class AuthController {
   constructor(private readonly _authService: AuthService) {}
 
-  // TODO: Adicionar filtro para remover a senha do usuário da resposta
+  @Serialize(UserDto)
   @Post('sign-up')
   signUp(@Body() body: SignUpDto): Promise<User> {
     return this._authService.signUp(body);

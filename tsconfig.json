@@ -13,10 +13,12 @@
     "paths": {
       "@/constants/*": ["./src/common/constants/*"],
       "@/controllers/*": ["./src/controllers/*"],
+      "@/decorators/*": ["./src/common/decorators/*"],
       "@/dtos/*": ["./src/common/dtos/*"],
       "@/enum/*": ["./src/common/enums/*"],
       "@/exceptions/*": ["./src/core/exceptions/*"],
       "@/filters/*": ["./src/core/filters/*"],
+      "@/interceptors/*": ["./src/core/interceptors/*"],
       "@/modules": ["./src/modules"],
       "@/modules/*": ["./src/modules/*"],
       "@/repositories/*": ["./src/core/repositories/*"],
