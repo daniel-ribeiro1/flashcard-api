@@ -3,7 +3,7 @@ import { UserRepository } from '@/repositories/user.repository';
 import { SignUpDto } from '@/dtos/auth/sign-up.dto';
 import { encrypt } from '@/utils/encryption.util';
 import { RequestException } from '@/exceptions/request.exception';
-import { ErrorMessage } from '@/constants/error-message';
+import { ExceptionMessage } from '@/enum/exceptions-message';
 
 @Injectable()
 export class AuthService {
@@ -14,7 +14,7 @@ export class AuthService {
 
     if (user) {
       throw new RequestException(
-        ErrorMessage.EMAIL_ALREADY_EXISTS,
+        ExceptionMessage.EMAIL_ALREADY_EXISTS,
         HttpStatus.CONFLICT,
       );
     }
