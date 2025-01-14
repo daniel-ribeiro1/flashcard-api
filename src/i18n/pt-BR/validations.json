@@ -1,0 +1,5 @@
+{
+  "IS_EMAIL": "O campo deve ser um email.",
+  "IS_NOT_EMPTY": "O campo deve ser preenchido.",
+  "IS_STRING": "O campo deve ser uma string."
+}

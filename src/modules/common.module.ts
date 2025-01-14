@@ -1,12 +1,14 @@
+import { I18nValidationExceptionFilter } from '@/filters/i18n-validation-exception.filter';
 import { RequestExceptionFilter } from '@/filters/request-exception.filter';
 import { PrismaService } from '@/services/prisma.service';
-import { Global, Module, ValidationPipe } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 import {
   AcceptLanguageResolver,
   HeaderResolver,
   I18nModule,
+  I18nValidationPipe,
   QueryResolver,
 } from 'nestjs-i18n';
 import { join } from 'path';
@@ -36,10 +38,16 @@ import { join } from 'path';
     {
       provide: APP_PIPE,
       useFactory: () => {
-        return new ValidationPipe({
+        return new I18nValidationPipe({
           whitelist: true,
+          forbidNonWhitelisted: true,
+          validateCustomDecorators: true,
         });
       },
+    },
+    {
+      provide: APP_FILTER,
+      useClass: I18nValidationExceptionFilter,
     },
     {
       provide: APP_FILTER,

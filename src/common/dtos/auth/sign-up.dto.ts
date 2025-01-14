@@ -1,25 +1,29 @@
+import { IsEmailI18n } from '@/decorators/validators/is-email-i18n.decorator';
+import { IsNotEmptyI18n } from '@/decorators/validators/is-not-empty-i18n.decorator';
+import { IsStringI18n } from '@/decorators/validators/is-string-i18n.decorator';
 import { User } from '@prisma/client';
-import { IsEmail, IsOptional, IsString } from 'class-validator';
+import { IsOptional } from 'class-validator';
 
-// TODO:
-//  - Adicionar mensagens internacionalizadas para as valiadções
 export class SignUpDto
   implements
     Pick<User, 'first_name' | 'last_name' | 'email' | 'password' | 'picture'>
 {
-  @IsString()
+  @IsStringI18n()
+  @IsNotEmptyI18n()
   first_name: string;
 
-  @IsString()
+  @IsStringI18n()
+  @IsNotEmptyI18n()
   last_name: string;
 
-  @IsEmail()
+  @IsEmailI18n()
   email: string;
 
-  @IsString()
+  @IsStringI18n()
+  @IsNotEmptyI18n()
   password: string;
 
-  @IsString()
+  @IsStringI18n()
   @IsOptional()
   picture: string | null;
 }
