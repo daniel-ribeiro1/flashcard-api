@@ -25,6 +25,7 @@ model User {
   updated_at DateTime @updatedAt
   // Relations
   decks Deck[]
+  created_categories Category[]
 }
 
 model Deck {
@@ -58,10 +59,12 @@ model Category {
   id Int @id @db.Integer @default(autoincrement())
   name String @db.VarChar(255)
   deleted Boolean @default(false)
+  created_by String @db.Char(36)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   // Relations
   deck_categories DeckCategory[]
+  author User @relation(fields: [created_by], references: [id])
 }
 
 model DeckCategory {
