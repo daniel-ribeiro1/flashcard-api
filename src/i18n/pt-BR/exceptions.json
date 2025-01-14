@@ -1,3 +1,5 @@
 {
-  "EMAIL_ALREADY_EXISTS": "Email já cadastrado."
+  "EMAIL_ALREADY_EXISTS": "Email já cadastrado.",
+  "INVALID_EMAIL_OR_PASSWORD": "Email ou senha inválidos.",
+  "USER_NOT_FOUND": "Usuário não encontrado."
 }

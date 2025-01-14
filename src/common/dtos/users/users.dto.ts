@@ -1,7 +1,7 @@
 import { User } from '@prisma/client';
 import { Expose } from 'class-transformer';
 
-export class UserDto
+export class UserResponseDto
   implements Pick<User, 'id' | 'first_name' | 'last_name' | 'email' | 'picture'>
 {
   @Expose()

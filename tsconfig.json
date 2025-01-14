@@ -23,6 +23,7 @@
       "@/modules/*": ["./src/modules/*"],
       "@/repositories/*": ["./src/core/repositories/*"],
       "@/services/*": ["./src/core/services/*"],
+      "@/types/*": ["./src/common/types/*"],
       "@/utils/*": ["./src/common/utils/*"]
     },
     "incremental": true,

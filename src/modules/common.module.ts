@@ -12,13 +12,20 @@ import {
   QueryResolver,
 } from 'nestjs-i18n';
 import { join } from 'path';
+import { JwtModule } from '@nestjs/jwt';
+import { EnvironmentProprety } from '@/enum/environment.enum';
 
 @Global()
 @Module({
   imports: [
+    JwtModule.register({
+      global: true,
+    }),
     I18nModule.forRootAsync({
       useFactory: (configService: ConfigService) => ({
-        fallbackLanguage: configService.getOrThrow('I18N_FALLBACK_LANGUAGE'),
+        fallbackLanguage: configService.getOrThrow(
+          EnvironmentProprety.I18N_FALLBACK_LANGUAGE,
+        ),
         loaderOptions: {
           path: join(__dirname, '..', 'i18n'),
           watch: true,
