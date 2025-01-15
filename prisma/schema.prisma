@@ -59,12 +59,12 @@ model Category {
   id Int @id @db.Integer @default(autoincrement())
   name String @db.VarChar(255)
   deleted Boolean @default(false)
-  created_by String @db.Char(36)
+  creator_id String @db.Char(36)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   // Relations
   deck_categories DeckCategory[]
-  author User @relation(fields: [created_by], references: [id])
+  created_by User @relation(fields: [creator_id], references: [id])
 }
 
 model DeckCategory {
