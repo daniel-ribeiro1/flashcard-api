@@ -20,4 +20,10 @@ export class CategoryService {
       creator_id: user.id,
     });
   }
+
+  findAllByRequester(): Promise<Category[]> {
+    const user = this._requestContextService.get(RequestContextKey.USER);
+
+    return this._categoryRepository.findAllByUser(user.id);
+  }
 }

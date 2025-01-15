@@ -11,4 +11,12 @@ export class CategoryRepository {
       data: category,
     });
   }
+
+  findAllByUser(userId: string): Promise<Category[]> {
+    return this._prisma.category.findMany({
+      where: {
+        creator_id: userId,
+      },
+    });
+  }
 }
