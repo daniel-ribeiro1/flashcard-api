@@ -14,6 +14,7 @@ import {
 import { join } from 'path';
 import { JwtModule } from '@nestjs/jwt';
 import { EnvironmentProprety } from '@/enum/environment.enum';
+import { RequestContextService } from '@/services/request-context.service';
 
 @Global()
 @Module({
@@ -40,8 +41,9 @@ import { EnvironmentProprety } from '@/enum/environment.enum';
     }),
   ],
   providers: [
-    PrismaService,
     ConfigService,
+    PrismaService,
+    RequestContextService,
     {
       provide: APP_PIPE,
       useFactory: () => {
@@ -61,6 +63,6 @@ import { EnvironmentProprety } from '@/enum/environment.enum';
       useClass: RequestExceptionFilter,
     },
   ],
-  exports: [PrismaService, ConfigService],
+  exports: [ConfigService, PrismaService, RequestContextService],
 })
 export class CommonModule {}

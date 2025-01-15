@@ -6,6 +6,14 @@ import { User } from '@prisma/client';
 export class UserRepository {
   constructor(private readonly _prisma: PrismaService) {}
 
+  findById(id: string): Promise<User> {
+    return this._prisma.user.findFirst({
+      where: {
+        id,
+      },
+    });
+  }
+
   findByEmail(email: string): Promise<User> {
     return this._prisma.user.findFirst({
       where: {
