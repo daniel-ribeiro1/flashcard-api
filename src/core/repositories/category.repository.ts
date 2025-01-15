@@ -19,4 +19,13 @@ export class CategoryRepository {
       },
     });
   }
+
+  findOneByIdAndUserId(id: number, userId: string): Promise<Category> {
+    return this._prisma.category.findFirst({
+      where: {
+        id,
+        creator_id: userId,
+      },
+    });
+  }
 }

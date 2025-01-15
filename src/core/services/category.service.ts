@@ -1,9 +1,11 @@
 import { CategoryRepository } from '@/repositories/category.repository';
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { RequestContextService } from './request-context.service';
 import { RequestContextKey } from '@/enum/request-context.enum';
 import { CreateCategoryDto } from '@/dtos/category/create-category.dto';
 import { Category } from '@prisma/client';
+import { RequestException } from '@/exceptions/request.exception';
+import { ExceptionMessage } from '@/enum/exceptions-message';
 
 @Injectable()
 export class CategoryService {
@@ -25,5 +27,22 @@ export class CategoryService {
     const user = this._requestContextService.get(RequestContextKey.USER);
 
     return this._categoryRepository.findAllByUser(user.id);
+  }
+
+  async findOneById(id: number): Promise<Category> {
+    const user = this._requestContextService.get(RequestContextKey.USER);
+    const category = await this._categoryRepository.findOneByIdAndUserId(
+      id,
+      user.id,
+    );
+
+    if (!category) {
+      throw new RequestException(
+        ExceptionMessage.CATEGORY_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return category;
   }
 }
