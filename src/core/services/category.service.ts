@@ -2,10 +2,11 @@ import { CategoryRepository } from '@/repositories/category.repository';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { RequestContextService } from './request-context.service';
 import { RequestContextKey } from '@/enum/request-context.enum';
-import { CreateCategoryDto } from '@/dtos/category/create-category.dto';
+import { CreateCategoryBodyDto } from '@/dtos/category/create-category.dto';
 import { Category } from '@prisma/client';
 import { RequestException } from '@/exceptions/request.exception';
 import { ExceptionMessage } from '@/enum/exceptions-message';
+import { UpdateCategoryBodyDto } from '@/dtos/category/update-category.dto';
 
 @Injectable()
 export class CategoryService {
@@ -14,7 +15,7 @@ export class CategoryService {
     private readonly _requestContextService: RequestContextService,
   ) {}
 
-  create(category: CreateCategoryDto): Promise<Category> {
+  create(category: CreateCategoryBodyDto): Promise<Category> {
     const user = this._requestContextService.get(RequestContextKey.USER);
 
     return this._categoryRepository.create({
@@ -44,5 +45,22 @@ export class CategoryService {
     }
 
     return category;
+  }
+
+  async update(id: number, body: UpdateCategoryBodyDto): Promise<Category> {
+    const user = this._requestContextService.get(RequestContextKey.USER);
+    const category = await this._categoryRepository.findOneByIdAndUserId(
+      id,
+      user.id,
+    );
+
+    if (!category) {
+      throw new RequestException(
+        ExceptionMessage.CATEGORY_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return this._categoryRepository.update(category.id, body);
   }
 }

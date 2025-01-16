@@ -1,9 +1,13 @@
 import { Serialize } from '@/decorators/serialize.decorator';
 import { CategoryResponseDto } from '@/dtos/category/category.dto';
-import { CreateCategoryDto } from '@/dtos/category/create-category.dto';
-import { FindOneCategoryByIdDto } from '@/dtos/category/find-one-category-by-id.dto';
+import { CreateCategoryBodyDto } from '@/dtos/category/create-category.dto';
+import {
+  UpdateCategoryBodyDto,
+  UpdateCategoryParamsDto,
+} from '@/dtos/category/update-category.dto';
+import { FindOneCategoryByIdParamsDto } from '@/dtos/category/find-one-category-by-id.dto';
 import { CategoryService } from '@/services/category.service';
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { Category } from '@prisma/client';
 
 @Controller('categories')
@@ -12,7 +16,7 @@ export class CategoryController {
 
   @Serialize(CategoryResponseDto)
   @Post()
-  create(@Body() body: CreateCategoryDto): Promise<Category> {
+  create(@Body() body: CreateCategoryBodyDto): Promise<Category> {
     return this._categoryService.create(body);
   }
 
@@ -24,7 +28,16 @@ export class CategoryController {
 
   @Serialize(CategoryResponseDto)
   @Get(':id')
-  findOneById(@Param() param: FindOneCategoryByIdDto): Promise<Category> {
+  findOneById(@Param() param: FindOneCategoryByIdParamsDto): Promise<Category> {
     return this._categoryService.findOneById(param.id);
+  }
+
+  @Serialize(CategoryResponseDto)
+  @Put(':id')
+  update(
+    @Param() param: UpdateCategoryParamsDto,
+    @Body() body: UpdateCategoryBodyDto,
+  ): Promise<Category> {
+    return this._categoryService.update(param.id, body);
   }
 }

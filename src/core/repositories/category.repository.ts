@@ -28,4 +28,16 @@ export class CategoryRepository {
       },
     });
   }
+
+  update(id: number, category: Pick<Category, 'name'>): Promise<Category> {
+    return this._prisma.category.update({
+      data: {
+        ...category,
+        id,
+      },
+      where: {
+        id,
+      },
+    });
+  }
 }
