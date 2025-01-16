@@ -7,11 +7,13 @@ import { Category } from '@prisma/client';
 import { RequestException } from '@/exceptions/request.exception';
 import { ExceptionMessage } from '@/enum/exceptions-message';
 import { UpdateCategoryBodyDto } from '@/dtos/category/update-category.dto';
+import { DeckCategoryRepository } from '@/repositories/deck-category.repository';
 
 @Injectable()
 export class CategoryService {
   constructor(
     private readonly _categoryRepository: CategoryRepository,
+    private readonly _deckCategoryRepository: DeckCategoryRepository,
     private readonly _requestContextService: RequestContextService,
   ) {}
 
@@ -62,5 +64,24 @@ export class CategoryService {
     }
 
     return this._categoryRepository.update(category.id, body);
+  }
+
+  async delete(id: number) {
+    const user = this._requestContextService.get(RequestContextKey.USER);
+    const category = await this._categoryRepository.findOneByIdAndUserId(
+      id,
+      user.id,
+    );
+
+    if (!category) {
+      throw new RequestException(
+        ExceptionMessage.CATEGORY_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    await this._deckCategoryRepository.hardDeleteManyByCategoryId(category.id);
+
+    return this._categoryRepository.hardDelete(category.id);
   }
 }

@@ -7,8 +7,17 @@ import {
 } from '@/dtos/category/update-category.dto';
 import { FindOneCategoryByIdParamsDto } from '@/dtos/category/find-one-category-by-id.dto';
 import { CategoryService } from '@/services/category.service';
-import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { Category } from '@prisma/client';
+import { DeleteCategoryParamsDto } from '@/dtos/category/delete-category.dto';
 
 @Controller('categories')
 export class CategoryController {
@@ -28,16 +37,24 @@ export class CategoryController {
 
   @Serialize(CategoryResponseDto)
   @Get(':id')
-  findOneById(@Param() param: FindOneCategoryByIdParamsDto): Promise<Category> {
-    return this._categoryService.findOneById(param.id);
+  findOneById(
+    @Param() params: FindOneCategoryByIdParamsDto,
+  ): Promise<Category> {
+    return this._categoryService.findOneById(params.id);
   }
 
   @Serialize(CategoryResponseDto)
   @Put(':id')
   update(
-    @Param() param: UpdateCategoryParamsDto,
+    @Param() params: UpdateCategoryParamsDto,
     @Body() body: UpdateCategoryBodyDto,
   ): Promise<Category> {
-    return this._categoryService.update(param.id, body);
+    return this._categoryService.update(params.id, body);
+  }
+
+  @Serialize(CategoryResponseDto)
+  @Delete(':id')
+  delete(@Param() params: DeleteCategoryParamsDto): Promise<Category> {
+    return this._categoryService.delete(params.id);
   }
 }

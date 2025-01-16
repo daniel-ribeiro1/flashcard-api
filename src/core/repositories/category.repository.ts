@@ -40,4 +40,12 @@ export class CategoryRepository {
       },
     });
   }
+
+  hardDelete(id: number): Promise<Category> {
+    return this._prisma.category.delete({
+      where: {
+        id,
+      },
+    });
+  }
 }
