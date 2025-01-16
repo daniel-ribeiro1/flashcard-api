@@ -1,4 +1,17 @@
-import { Controller } from '@nestjs/common';
+import { Serialize } from '@/decorators/serialize.decorator';
+import { CreateDeckBodyDto } from '@/dtos/decks/create-deck.dto';
+import { DeckResponseDto } from '@/dtos/decks/deck.dto';
+import { DeckService } from '@/services/deck.service';
+import { DeckWithCategories } from '@/types/decks/deck.type';
+import { Body, Controller, Post } from '@nestjs/common';
 
 @Controller('decks')
-export class DeckController {}
+export class DeckController {
+  constructor(private readonly _deckService: DeckService) {}
+
+  @Serialize(DeckResponseDto)
+  @Post()
+  create(@Body() body: CreateDeckBodyDto): Promise<DeckWithCategories> {
+    return this._deckService.create(body);
+  }
+}

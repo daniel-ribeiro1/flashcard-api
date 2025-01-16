@@ -18,8 +18,8 @@ export class AuthService {
     private readonly _userRepository: UserRepository,
   ) {}
 
-  async signUp(signUp: SignUpDto) {
-    const user = await this._userRepository.findByEmail(signUp.email);
+  async signUp(body: SignUpDto) {
+    const user = await this._userRepository.findByEmail(body.email);
 
     if (user) {
       throw new RequestException(
@@ -28,13 +28,13 @@ export class AuthService {
       );
     }
 
-    signUp.password = await encrypt(signUp.password);
+    body.password = await encrypt(body.password);
 
-    return this._userRepository.create(signUp);
+    return this._userRepository.create(body);
   }
 
-  async signIn(signIn: SignInDto): Promise<SignInResponse> {
-    const user = await this._userRepository.findByEmail(signIn.email);
+  async signIn(body: SignInDto): Promise<SignInResponse> {
+    const user = await this._userRepository.findByEmail(body.email);
 
     if (!user) {
       throw new RequestException(
@@ -43,7 +43,7 @@ export class AuthService {
       );
     }
 
-    if (!(await compareEncryptedData(signIn.password, user.password))) {
+    if (!(await compareEncryptedData(body.password, user.password))) {
       throw new RequestException(
         ExceptionMessage.INVALID_EMAIL_OR_PASSWORD,
         HttpStatus.BAD_REQUEST,

@@ -72,6 +72,6 @@ model DeckCategory {
   categoryId Int @db.Integer
   @@id([deckId, categoryId])
   // Relations
-  deck Deck @relation(fields: [deckId], references: [id])
-  category Category @relation(fields: [categoryId], references: [id])
+  deck Deck @relation(fields: [deckId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 }

@@ -1,11 +1,11 @@
 import { Serialize } from '@/decorators/serialize.decorator';
-import { CategoryResponseDto } from '@/dtos/category/category.dto';
-import { CreateCategoryBodyDto } from '@/dtos/category/create-category.dto';
+import { CategoryResponseDto } from '@/dtos/categories/category.dto';
+import { CreateCategoryBodyDto } from '@/dtos/categories/create-category.dto';
 import {
   UpdateCategoryBodyDto,
   UpdateCategoryParamsDto,
-} from '@/dtos/category/update-category.dto';
-import { FindOneCategoryByIdParamsDto } from '@/dtos/category/find-one-category-by-id.dto';
+} from '@/dtos/categories/update-category.dto';
+import { FindOneCategoryByIdParamsDto } from '@/dtos/categories/find-one-category-by-id.dto';
 import { CategoryService } from '@/services/category.service';
 import {
   Body,
@@ -17,7 +17,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { Category } from '@prisma/client';
-import { DeleteCategoryParamsDto } from '@/dtos/category/delete-category.dto';
+import { DeleteCategoryParamsDto } from '@/dtos/categories/delete-category.dto';
 
 @Controller('categories')
 export class CategoryController {

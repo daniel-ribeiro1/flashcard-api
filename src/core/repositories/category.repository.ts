@@ -12,6 +12,18 @@ export class CategoryRepository {
     });
   }
 
+  findAllByDeckId(deckId: string): Promise<Category[]> {
+    return this._prisma.category.findMany({
+      where: {
+        deckCategories: {
+          some: {
+            deckId,
+          },
+        },
+      },
+    });
+  }
+
   findAllByUser(userId: string): Promise<Category[]> {
     return this._prisma.category.findMany({
       where: {
