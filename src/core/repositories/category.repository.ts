@@ -6,7 +6,7 @@ import { Category } from '@prisma/client';
 export class CategoryRepository {
   constructor(private readonly _prisma: PrismaService) {}
 
-  create(category: Pick<Category, 'name' | 'creator_id'>): Promise<Category> {
+  create(category: Pick<Category, 'name' | 'authorId'>): Promise<Category> {
     return this._prisma.category.create({
       data: category,
     });
@@ -15,7 +15,7 @@ export class CategoryRepository {
   findAllByUser(userId: string): Promise<Category[]> {
     return this._prisma.category.findMany({
       where: {
-        creator_id: userId,
+        authorId: userId,
       },
     });
   }
@@ -24,7 +24,7 @@ export class CategoryRepository {
     return this._prisma.category.findFirst({
       where: {
         id,
-        creator_id: userId,
+        authorId: userId,
       },
     });
   }

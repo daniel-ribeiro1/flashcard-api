@@ -15,17 +15,17 @@ datasource db {
 
 model User {
   id String @id @db.Char(36) @default(uuid())
-  first_name String @db.VarChar(255)
-  last_name String @db.VarChar(255)
+  firstName String @db.VarChar(255)
+  lastName String @db.VarChar(255)
   picture String? 
   email String @db.VarChar(255) @unique 
   password String @db.VarChar(255)
   deleted Boolean @default(false)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   // Relations
   decks Deck[]
-  created_categories Category[]
+  createdCategories Category[]
 }
 
 model Deck {
@@ -33,45 +33,45 @@ model Deck {
   title String @db.VarChar(255)
   description String? 
   deleted Boolean @default(false)
-  author_id String @db.Char(36)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  authorId String @db.Char(36)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   // Relations
   cards Card[]
-  deck_categories DeckCategory[]
-  author User @relation(fields: [author_id], references: [id])
+  deckCategories DeckCategory[]
+  author User @relation(fields: [authorId], references: [id])
 }
 
 model Card {
   id String @db.Char(36) @id @default(uuid())
   front String @db.VarChar(255)
   back String @db.VarChar(255)
-  revision_date DateTime
+  revisionDate DateTime
   deleted Boolean @default(false)
-  deck_id String @db.Char(36)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  deckId String @db.Char(36)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   // Relations
-  deck Deck @relation(fields: [deck_id], references: [id])
+  deck Deck @relation(fields: [deckId], references: [id])
 }
 
 model Category {
   id Int @id @db.Integer @default(autoincrement())
   name String @db.VarChar(255)
   deleted Boolean @default(false)
-  creator_id String @db.Char(36)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  authorId String @db.Char(36)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   // Relations
-  deck_categories DeckCategory[]
-  created_by User @relation(fields: [creator_id], references: [id])
+  deckCategories DeckCategory[]
+  createdBy User @relation(fields: [authorId], references: [id])
 }
 
 model DeckCategory {
-  deck_id String @db.Char(36)
-  category_id Int @db.Integer
-  @@id([deck_id, category_id])
+  deckId String @db.Char(36)
+  categoryId Int @db.Integer
+  @@id([deckId, categoryId])
   // Relations
-  deck Deck @relation(fields: [deck_id], references: [id])
-  category Category @relation(fields: [category_id], references: [id])
+  deck Deck @relation(fields: [deckId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
 }

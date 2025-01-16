@@ -18,7 +18,7 @@ export class DeckCategoryRepository {
   hardDeleteManyByCategoryId(categoryId: number): Promise<Prisma.BatchPayload> {
     return this._prisma.deckCategory.deleteMany({
       where: {
-        category_id: categoryId,
+        categoryId,
       },
     });
   }

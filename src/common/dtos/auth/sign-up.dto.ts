@@ -6,15 +6,15 @@ import { IsOptional } from 'class-validator';
 
 export class SignUpDto
   implements
-    Pick<User, 'first_name' | 'last_name' | 'email' | 'password' | 'picture'>
+    Pick<User, 'firstName' | 'lastName' | 'email' | 'password' | 'picture'>
 {
   @IsStringI18n()
   @IsNotEmptyI18n()
-  first_name: string;
+  firstName: string;
 
   @IsStringI18n()
   @IsNotEmptyI18n()
-  last_name: string;
+  lastName: string;
 
   @IsEmailI18n()
   email: string;

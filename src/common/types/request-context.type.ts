@@ -3,7 +3,7 @@ import { User } from '@prisma/client';
 
 export type UserRequestContext = Pick<
   User,
-  'id' | 'first_name' | 'last_name' | 'email'
+  'id' | 'firstName' | 'lastName' | 'email'
 >;
 
 export type RequestContext = {

@@ -2,16 +2,16 @@ import { User } from '@prisma/client';
 import { Expose } from 'class-transformer';
 
 export class UserResponseDto
-  implements Pick<User, 'id' | 'first_name' | 'last_name' | 'email' | 'picture'>
+  implements Pick<User, 'id' | 'firstName' | 'lastName' | 'email' | 'picture'>
 {
   @Expose()
   id: string;
 
   @Expose()
-  first_name: string;
+  firstName: string;
 
   @Expose()
-  last_name: string;
+  lastName: string;
 
   @Expose()
   email: string;

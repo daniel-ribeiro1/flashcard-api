@@ -25,7 +25,7 @@ export class UserRepository {
   create(
     user: Pick<
       User,
-      'first_name' | 'last_name' | 'email' | 'password' | 'picture'
+      'firstName' | 'lastName' | 'email' | 'password' | 'picture'
     >,
   ): Promise<User> {
     return this._prisma.user.create({

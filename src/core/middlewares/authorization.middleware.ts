@@ -29,8 +29,8 @@ export class AuthorizationMiddleware implements NestMiddleware {
     this._requestContextService.set(RequestContextKey.USER, {
       id: user.id,
       email: user.email,
-      first_name: user.first_name,
-      last_name: user.last_name,
+      firstName: user.firstName,
+      lastName: user.lastName,
     });
 
     next();

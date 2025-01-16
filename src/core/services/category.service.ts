@@ -22,7 +22,7 @@ export class CategoryService {
 
     return this._categoryRepository.create({
       name: category.name,
-      creator_id: user.id,
+      authorId: user.id,
     });
   }
 
