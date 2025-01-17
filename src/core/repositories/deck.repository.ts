@@ -1,5 +1,6 @@
 import { PrismaService } from '@/services/prisma.service';
 import { DeckWithCategories } from '@/types/decks/deck.type';
+import { removeProperties } from '@/utils/object-properties.util';
 import { Injectable } from '@nestjs/common';
 import { Deck } from '@prisma/client';
 
@@ -30,5 +31,27 @@ export class DeckRepository {
         },
       },
     });
+  }
+
+  async findAllByUser(userId: string): Promise<DeckWithCategories[]> {
+    const decks = await this._prismaService.deck.findMany({
+      include: {
+        deckCategories: {
+          include: {
+            category: true,
+          },
+        },
+      },
+      where: {
+        authorId: userId,
+      },
+    });
+
+    return decks.map((deck) => ({
+      ...removeProperties(deck, ['deckCategories']),
+      categories: deck.deckCategories.map(
+        (deckCategory) => deckCategory.category,
+      ),
+    }));
   }
 }

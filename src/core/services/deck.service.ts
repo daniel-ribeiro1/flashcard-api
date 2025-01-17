@@ -39,4 +39,9 @@ export class DeckService {
       categories,
     };
   }
+
+  findAll(): Promise<DeckWithCategories[]> {
+    const user = this._requestContextService.get(RequestContextKey.USER);
+    return this._deckRepository.findAllByUser(user.id);
+  }
 }
