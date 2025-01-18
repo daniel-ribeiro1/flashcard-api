@@ -1,12 +1,12 @@
-import { PrismaService } from '@/services/prisma.service';
+import { Deck } from '@prisma/client';
 import {
   DeckWithCategories,
   DeckWithCategoriesPaginationOptions,
 } from '@/types/decks/deck.type';
-import { removeProperties } from '@/utils/object-properties.util';
-import { orderByOptions, PaginatedResponse } from '@/utils/pagination.util';
 import { Injectable } from '@nestjs/common';
-import { Deck } from '@prisma/client';
+import { orderByOptions, PaginatedResponse } from '@/utils/pagination.util';
+import { PrismaService } from '@/services/prisma.service';
+import { removeProperties } from '@/utils/object-properties.util';
 
 @Injectable()
 export class DeckRepository {
@@ -77,5 +77,30 @@ export class DeckRepository {
       take: paginationOptions.take,
       total: deckCount,
     });
+  }
+
+  async findOneByIdAndUserId(
+    id: string,
+    userId: string,
+  ): Promise<DeckWithCategories> {
+    const deck = await this._prismaService.deck.findUnique({
+      where: { id, authorId: userId },
+      include: {
+        deckCategories: {
+          include: {
+            category: true,
+          },
+        },
+      },
+    });
+
+    if (!deck) return null;
+
+    return {
+      ...removeProperties(deck, ['deckCategories']),
+      categories: deck.deckCategories.map(
+        (deckCategory) => deckCategory.category,
+      ),
+    };
   }
 }

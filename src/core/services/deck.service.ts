@@ -1,16 +1,17 @@
+import { Category } from '@prisma/client';
+import { CategoryService } from './category.service';
 import { CreateDeckBodyDto } from '@/dtos/decks/create-deck.dto';
 import { DeckRepository } from '@/repositories/deck.repository';
-import { Injectable } from '@nestjs/common';
-import { RequestContextKey } from '@/enum/request-context.enum';
-import { CategoryService } from './category.service';
 import {
   DeckWithCategories,
   DeckWithCategoriesPaginationOptions,
 } from '@/types/decks/deck.type';
-import { Category } from '@prisma/client';
-
-import { RequestContextService } from './request-context.service';
+import { ExceptionMessage } from '@/enum/exceptions-message';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { PaginatedResponse } from '@/utils/pagination.util';
+import { RequestContextKey } from '@/enum/request-context.enum';
+import { RequestContextService } from './request-context.service';
+import { RequestException } from '@/exceptions/request.exception';
 
 @Injectable()
 export class DeckService {
@@ -50,5 +51,19 @@ export class DeckService {
     const user = this._requestContextService.get(RequestContextKey.USER);
 
     return this._deckRepository.findAllByUser(user.id, paginationOptions);
+  }
+
+  async findOneById(id: string): Promise<DeckWithCategories> {
+    const user = this._requestContextService.get(RequestContextKey.USER);
+    const deck = await this._deckRepository.findOneByIdAndUserId(id, user.id);
+
+    if (!deck) {
+      throw new RequestException(
+        ExceptionMessage.DECK_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return deck;
   }
 }
