@@ -30,12 +30,27 @@ export class I18nValidationExceptionFilter implements ExceptionFilter {
 
   private _groupErrorsFromException({
     errors,
-  }: I18nValidationException): Record<string, string[]> {
+  }: Pick<I18nValidationException, 'errors'>): Record<string, string[]> {
     const groupedErrors: Record<string, string[]> = {};
 
     for (const error of errors) {
-      const { property, constraints } = error;
+      const { property, constraints, children } = error;
       const propertyErrors: string[] = [];
+
+      if (children.length > 0) {
+        const groupedErrorsChildren = this._groupErrorsFromException({
+          errors: children,
+        });
+
+        Object.assign(groupedErrors, {
+          [property]: groupedErrors[property]
+            ? {
+                ...groupedErrors[property],
+                ...groupedErrorsChildren[property],
+              }
+            : groupedErrorsChildren,
+        });
+      }
 
       for (const constraintKey in constraints) {
         const validation = constraints[constraintKey].split('|');
@@ -55,7 +70,14 @@ export class I18nValidationExceptionFilter implements ExceptionFilter {
         );
       }
 
-      Object.assign(groupedErrors, { [property]: propertyErrors });
+      Object.assign(groupedErrors, {
+        [property]: groupedErrors[property]
+          ? {
+              ...groupedErrors[property],
+              ...propertyErrors,
+            }
+          : propertyErrors,
+      });
     }
 
     return groupedErrors;

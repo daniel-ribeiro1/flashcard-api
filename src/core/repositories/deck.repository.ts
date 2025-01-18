@@ -1,6 +1,10 @@
 import { PrismaService } from '@/services/prisma.service';
-import { DeckWithCategories } from '@/types/decks/deck.type';
+import {
+  DeckWithCategories,
+  DeckWithCategoriesPaginationOptions,
+} from '@/types/decks/deck.type';
 import { removeProperties } from '@/utils/object-properties.util';
+import { orderByOptions, PaginatedResponse } from '@/utils/pagination.util';
 import { Injectable } from '@nestjs/common';
 import { Deck } from '@prisma/client';
 
@@ -33,7 +37,12 @@ export class DeckRepository {
     });
   }
 
-  async findAllByUser(userId: string): Promise<DeckWithCategories[]> {
+  async findAllByUser(
+    userId: string,
+    paginationOptions: DeckWithCategoriesPaginationOptions,
+  ): Promise<PaginatedResponse<DeckWithCategories>> {
+    console.log(orderByOptions(paginationOptions.orderBy));
+
     const decks = await this._prismaService.deck.findMany({
       include: {
         deckCategories: {
@@ -42,16 +51,31 @@ export class DeckRepository {
           },
         },
       },
+      take: paginationOptions.take,
+      skip:
+        paginationOptions.page * paginationOptions.take -
+        paginationOptions.take,
+      orderBy: orderByOptions(paginationOptions.orderBy),
       where: {
         authorId: userId,
       },
     });
 
-    return decks.map((deck) => ({
+    const deckCount = await this._prismaService.deck.count({
+      where: { authorId: userId },
+    });
+
+    const deckWithCategories: DeckWithCategories[] = decks.map((deck) => ({
       ...removeProperties(deck, ['deckCategories']),
       categories: deck.deckCategories.map(
         (deckCategory) => deckCategory.category,
       ),
     }));
+
+    return new PaginatedResponse(deckWithCategories, {
+      page: paginationOptions.page,
+      take: paginationOptions.take,
+      total: deckCount,
+    });
   }
 }

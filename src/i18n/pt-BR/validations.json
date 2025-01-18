@@ -1,7 +1,10 @@
 {
   "IS_EMAIL": "O campo deve ser um email.",
+  "IS_ENUM": "O campo deve corresponder a um dos seguintes valores: [{constraints.1}].",
   "IS_NOT_EMPTY": "O campo deve ser preenchido.",
   "IS_NUMBER": "O campo deve ser um número.",
   "IS_STRING": "O campo deve ser uma string.",
-  "IS_UUID": "O campo deve ser um UUID."
+  "IS_UUID": "O campo deve ser um UUID.",
+  "MAX_VALUE": "O valor máximo do campo deve ser {number}.",
+  "MIN_VALUE": "O valor mínimo do campo deve ser {number}."
 }

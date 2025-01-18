@@ -3,10 +3,14 @@ import { DeckRepository } from '@/repositories/deck.repository';
 import { Injectable } from '@nestjs/common';
 import { RequestContextKey } from '@/enum/request-context.enum';
 import { CategoryService } from './category.service';
-import { DeckWithCategories } from '@/types/decks/deck.type';
+import {
+  DeckWithCategories,
+  DeckWithCategoriesPaginationOptions,
+} from '@/types/decks/deck.type';
 import { Category } from '@prisma/client';
 
 import { RequestContextService } from './request-context.service';
+import { PaginatedResponse } from '@/utils/pagination.util';
 
 @Injectable()
 export class DeckService {
@@ -40,8 +44,11 @@ export class DeckService {
     };
   }
 
-  findAll(): Promise<DeckWithCategories[]> {
+  findAll(
+    paginationOptions: DeckWithCategoriesPaginationOptions,
+  ): Promise<PaginatedResponse<DeckWithCategories>> {
     const user = this._requestContextService.get(RequestContextKey.USER);
-    return this._deckRepository.findAllByUser(user.id);
+
+    return this._deckRepository.findAllByUser(user.id, paginationOptions);
   }
 }
