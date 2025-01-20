@@ -46,7 +46,7 @@ class DeckWithCategoriesOrderByDto {
   updatedAt?: OrderBy;
 }
 
-export class DeckWithCategoriesPaginationOptionsDto extends PaginationOptionsDto<DeckWithCategories> {
+export class DeckWithCategoriesPaginationOptions extends PaginationOptionsDto<DeckWithCategories> {
   @IsOptional()
   @TransformToClass(DeckWithCategoriesOrderByDto)
   orderBy: DeckWithCategoriesOrderByDto;

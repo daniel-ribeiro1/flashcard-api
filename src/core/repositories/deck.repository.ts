@@ -1,12 +1,10 @@
 import { Category, Deck } from '@prisma/client';
-import {
-  DeckWithCategories,
-  DeckWithCategoriesPaginationOptions,
-} from '@/types/decks/deck.type';
+import { DeckWithCategories } from '@/types/decks/deck.type';
 import { Injectable } from '@nestjs/common';
-import { orderByOptions, PaginatedResponse } from '@/utils/pagination.util';
+import { PaginatedResponse, paginateQuery } from '@/utils/pagination.util';
 import { PrismaService } from '@/services/prisma.service';
 import { removeProperties } from '@/utils/object-properties.util';
+import { DeckWithCategoriesPaginationOptions } from '@/dtos/decks/deck.dto';
 
 @Injectable()
 export class DeckRepository {
@@ -57,6 +55,7 @@ export class DeckRepository {
     paginationOptions: DeckWithCategoriesPaginationOptions,
   ): Promise<PaginatedResponse<DeckWithCategories>> {
     const decks = await this._prismaService.deck.findMany({
+      ...paginateQuery(paginationOptions),
       include: {
         deckCategories: {
           include: {
@@ -64,17 +63,12 @@ export class DeckRepository {
           },
         },
       },
-      take: paginationOptions.take,
-      skip:
-        paginationOptions.page * paginationOptions.take -
-        paginationOptions.take,
-      orderBy: orderByOptions(paginationOptions.orderBy),
       where: {
         authorId: userId,
       },
     });
 
-    const deckCount = await this._prismaService.deck.count({
+    const total = await this._prismaService.deck.count({
       where: { authorId: userId },
     });
 
@@ -85,7 +79,7 @@ export class DeckRepository {
     return new PaginatedResponse(deckWithCategories, {
       page: paginationOptions.page,
       take: paginationOptions.take,
-      total: deckCount,
+      total,
     });
   }
 

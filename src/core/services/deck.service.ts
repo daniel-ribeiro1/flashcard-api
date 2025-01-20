@@ -2,10 +2,7 @@ import { Category } from '@prisma/client';
 import { CategoryService } from './category.service';
 import { CreateDeckBodyDto } from '@/dtos/decks/create-deck.dto';
 import { DeckRepository } from '@/repositories/deck.repository';
-import {
-  DeckWithCategories,
-  DeckWithCategoriesPaginationOptions,
-} from '@/types/decks/deck.type';
+import { DeckWithCategories } from '@/types/decks/deck.type';
 import { ExceptionMessage } from '@/enum/exceptions-message';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { RequestContextKey } from '@/enum/request-context.enum';
@@ -13,6 +10,7 @@ import { PaginatedResponse } from '@/utils/pagination.util';
 import { RequestException } from '@/exceptions/request.exception';
 import { UpdateDeckBodyDto } from '@/dtos/decks/update-deck.dto';
 import { RequestContextService } from './request-context.service';
+import { DeckWithCategoriesPaginationOptions } from '@/dtos/decks/deck.dto';
 
 @Injectable()
 export class DeckService {

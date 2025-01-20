@@ -12,7 +12,7 @@ import { CreateDeckBodyDto } from '@/dtos/decks/create-deck.dto';
 import {
   DeckResponseDto,
   DeckWithCategoriesPaginatedResponseDto,
-  DeckWithCategoriesPaginationOptionsDto,
+  DeckWithCategoriesPaginationOptions,
 } from '@/dtos/decks/deck.dto';
 import { DeckService } from '@/services/deck.service';
 import { DeckWithCategories } from '@/types/decks/deck.type';
@@ -38,7 +38,7 @@ export class DeckController {
   @Serialize(DeckWithCategoriesPaginatedResponseDto)
   @Get()
   findAll(
-    @Query() query: DeckWithCategoriesPaginationOptionsDto,
+    @Query() query: DeckWithCategoriesPaginationOptions,
   ): Promise<PaginatedResponse<DeckWithCategories>> {
     return this._deckService.findAll(query);
   }
