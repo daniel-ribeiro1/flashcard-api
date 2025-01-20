@@ -30,9 +30,9 @@ export class CategoryService {
     return this._categoryRepository.findAllByUser(user.id);
   }
 
-  async findOneById(id: number): Promise<Category> {
+  async findById(id: number): Promise<Category> {
     const user = this._requestContextService.get(RequestContextKey.USER);
-    const category = await this._categoryRepository.findOneByIdAndUserId(
+    const category = await this._categoryRepository.findByIdAndUserId(
       id,
       user.id,
     );
@@ -49,7 +49,7 @@ export class CategoryService {
 
   async update(id: number, body: UpdateCategoryBodyDto): Promise<Category> {
     const user = this._requestContextService.get(RequestContextKey.USER);
-    const category = await this._categoryRepository.findOneByIdAndUserId(
+    const category = await this._categoryRepository.findByIdAndUserId(
       id,
       user.id,
     );
@@ -66,7 +66,7 @@ export class CategoryService {
 
   async delete(id: number) {
     const user = this._requestContextService.get(RequestContextKey.USER);
-    const category = await this._categoryRepository.findOneByIdAndUserId(
+    const category = await this._categoryRepository.findByIdAndUserId(
       id,
       user.id,
     );
@@ -89,7 +89,7 @@ export class CategoryService {
 
     for (const categoryId of categoryIds) {
       categoryPromises.push(
-        this._categoryRepository.findOneByIdAndUserId(categoryId, user.id),
+        this._categoryRepository.findByIdAndUserId(categoryId, user.id),
       );
     }
 

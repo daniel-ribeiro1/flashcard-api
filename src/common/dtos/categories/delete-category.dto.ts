@@ -1,3 +1,3 @@
-import { FindOneCategoryByIdParamsDto } from './find-one-category-by-id.dto';
+import { FindCategoryByIdParamsDto } from './find-category-by-id.dto';
 
-export class DeleteCategoryParamsDto extends FindOneCategoryByIdParamsDto {}
+export class DeleteCategoryParamsDto extends FindCategoryByIdParamsDto {}

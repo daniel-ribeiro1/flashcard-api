@@ -5,7 +5,7 @@ import {
   UpdateCategoryBodyDto,
   UpdateCategoryParamsDto,
 } from '@/dtos/categories/update-category.dto';
-import { FindOneCategoryByIdParamsDto } from '@/dtos/categories/find-one-category-by-id.dto';
+import { FindCategoryByIdParamsDto } from '@/dtos/categories/find-category-by-id.dto';
 import { CategoryService } from '@/services/category.service';
 import {
   Body,
@@ -37,10 +37,8 @@ export class CategoryController {
 
   @Serialize(CategoryResponseDto)
   @Get(':id')
-  findOneById(
-    @Param() params: FindOneCategoryByIdParamsDto,
-  ): Promise<Category> {
-    return this._categoryService.findOneById(params.id);
+  findById(@Param() params: FindCategoryByIdParamsDto): Promise<Category> {
+    return this._categoryService.findById(params.id);
   }
 
   @Serialize(CategoryResponseDto)

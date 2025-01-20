@@ -2,7 +2,7 @@ import { IsNotEmptyI18n } from '@/decorators/validators/is-not-empty-i18n.decora
 import { IsNumberI18n } from '@/decorators/validators/is-number-18n.decorator';
 import { Transform } from 'class-transformer';
 
-export class FindOneCategoryByIdParamsDto {
+export class FindCategoryByIdParamsDto {
   @Transform(({ value }) => Number(value))
   @IsNotEmptyI18n()
   @IsNumberI18n()

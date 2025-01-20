@@ -1,5 +1,5 @@
 import { CreateCategoryBodyDto } from './create-category.dto';
-import { FindOneCategoryByIdParamsDto } from './find-one-category-by-id.dto';
+import { FindCategoryByIdParamsDto } from './find-category-by-id.dto';
 
-export class UpdateCategoryParamsDto extends FindOneCategoryByIdParamsDto {}
+export class UpdateCategoryParamsDto extends FindCategoryByIdParamsDto {}
 export class UpdateCategoryBodyDto extends CreateCategoryBodyDto {}

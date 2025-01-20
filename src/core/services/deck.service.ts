@@ -8,10 +8,11 @@ import {
 } from '@/types/decks/deck.type';
 import { ExceptionMessage } from '@/enum/exceptions-message';
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { PaginatedResponse } from '@/utils/pagination.util';
 import { RequestContextKey } from '@/enum/request-context.enum';
-import { RequestContextService } from './request-context.service';
+import { PaginatedResponse } from '@/utils/pagination.util';
 import { RequestException } from '@/exceptions/request.exception';
+import { UpdateDeckBodyDto } from '@/dtos/decks/update-deck.dto';
+import { RequestContextService } from './request-context.service';
 
 @Injectable()
 export class DeckService {
@@ -53,9 +54,9 @@ export class DeckService {
     return this._deckRepository.findAllByUser(user.id, paginationOptions);
   }
 
-  async findOneById(id: string): Promise<DeckWithCategories> {
+  async findById(id: string): Promise<DeckWithCategories> {
     const user = this._requestContextService.get(RequestContextKey.USER);
-    const deck = await this._deckRepository.findOneByIdAndUserId(id, user.id);
+    const deck = await this._deckRepository.findByIdAndUserId(id, user.id);
 
     if (!deck) {
       throw new RequestException(
@@ -65,5 +66,34 @@ export class DeckService {
     }
 
     return deck;
+  }
+
+  async update(
+    id: string,
+    body: UpdateDeckBodyDto,
+  ): Promise<DeckWithCategories> {
+    const user = this._requestContextService.get(RequestContextKey.USER);
+    const deck = await this._deckRepository.findByIdAndUserId(id, user.id);
+
+    if (!deck) {
+      throw new RequestException(
+        ExceptionMessage.DECK_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    let categories: Category[];
+
+    if (body.categoryIds) {
+      categories = await this._categoryService.validateAndGetCategoriesIfValid(
+        body.categoryIds,
+      );
+    }
+
+    return this._deckRepository.update(id, {
+      title: body.title,
+      description: body.description,
+      categories,
+    });
   }
 }

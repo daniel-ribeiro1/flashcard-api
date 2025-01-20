@@ -37,12 +37,32 @@ export class DeckRepository {
     });
   }
 
+  async findById(id: string): Promise<DeckWithCategories> {
+    const deckWithCategories = await this._prismaService.deck.findUnique({
+      include: {
+        deckCategories: {
+          include: {
+            category: true,
+          },
+        },
+      },
+      where: { id },
+    });
+
+    if (!deckWithCategories) return null;
+
+    return {
+      ...removeProperties(deckWithCategories, ['deckCategories']),
+      categories: deckWithCategories.deckCategories.map(
+        (deckCategory) => deckCategory.category,
+      ),
+    };
+  }
+
   async findAllByUser(
     userId: string,
     paginationOptions: DeckWithCategoriesPaginationOptions,
   ): Promise<PaginatedResponse<DeckWithCategories>> {
-    console.log(orderByOptions(paginationOptions.orderBy));
-
     const decks = await this._prismaService.deck.findMany({
       include: {
         deckCategories: {
@@ -79,7 +99,7 @@ export class DeckRepository {
     });
   }
 
-  async findOneByIdAndUserId(
+  async findByIdAndUserId(
     id: string,
     userId: string,
   ): Promise<DeckWithCategories> {
@@ -102,5 +122,42 @@ export class DeckRepository {
         (deckCategory) => deckCategory.category,
       ),
     };
+  }
+
+  async update(
+    id: string,
+    deck: Partial<
+      Pick<
+        DeckWithCategories,
+        'title' | 'description' | 'authorId' | 'categories'
+      >
+    >,
+  ): Promise<DeckWithCategories> {
+    await this._prismaService.deck.update({
+      where: { id },
+      data: {
+        title: deck.title,
+        description: deck.description,
+        deckCategories: {
+          deleteMany: !!deck.categories
+            ? {
+                NOT: {
+                  categoryId: {
+                    in: (deck.categories || []).map((category) => category.id),
+                  },
+                },
+              }
+            : undefined,
+          createMany: {
+            data: (deck.categories || []).map((category) => ({
+              categoryId: category.id,
+            })),
+            skipDuplicates: true,
+          },
+        },
+      },
+    });
+
+    return this.findById(id);
   }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { CreateDeckBodyDto } from '@/dtos/decks/create-deck.dto';
 import {
   DeckResponseDto,
@@ -7,9 +7,13 @@ import {
 } from '@/dtos/decks/deck.dto';
 import { DeckService } from '@/services/deck.service';
 import { DeckWithCategories } from '@/types/decks/deck.type';
-import { FindOneDeckByIdParamsDto } from '@/dtos/decks/find-one-deck-by-id.dto';
+import { FindDeckByIdParamsDto } from '@/dtos/decks/find-deck-by-id.dto';
 import { PaginatedResponse } from '@/utils/pagination.util';
 import { Serialize } from '@/decorators/serialize.decorator';
+import {
+  UpdateDeckBodyDto,
+  UpdateDeckParamsDto,
+} from '@/dtos/decks/update-deck.dto';
 
 @Controller('decks')
 export class DeckController {
@@ -31,9 +35,18 @@ export class DeckController {
 
   @Serialize(DeckResponseDto)
   @Get(':id')
-  findOneById(
-    @Param() params: FindOneDeckByIdParamsDto,
+  findById(
+    @Param() params: FindDeckByIdParamsDto,
   ): Promise<DeckWithCategories> {
-    return this._deckService.findOneById(params.id);
+    return this._deckService.findById(params.id);
+  }
+
+  @Serialize(DeckResponseDto)
+  @Put(':id')
+  update(
+    @Param() params: UpdateDeckParamsDto,
+    @Body() body: UpdateDeckBodyDto,
+  ): Promise<DeckWithCategories> {
+    return this._deckService.update(params.id, body);
   }
 }
