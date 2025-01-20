@@ -39,4 +39,13 @@ export class CardRepository {
       total,
     });
   }
+
+  async findByIdAndDeckId(id: string, deckId: string): Promise<Card> {
+    return this._prisma.card.findFirst({
+      where: {
+        id,
+        deckId,
+      },
+    });
+  }
 }

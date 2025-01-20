@@ -12,6 +12,7 @@ import { ExceptionMessage } from '@/enum/exceptions-message';
 import { PaginatedResponse } from '@/utils/pagination.util';
 import { FindAllCardsQueryDto } from '@/dtos/cards/find-all-cards.dto';
 import { DeckWithCategories } from '@/types/decks/deck.type';
+import { FindCardByIdQueryDto } from '@/dtos/cards/find-card-by-id.dto';
 
 @Injectable()
 export class CardService {
@@ -41,6 +42,20 @@ export class CardService {
     await this._validateAndGetDeckIfValid(deckId);
 
     return this._cardRepository.findAllByDeck(deckId, paginationOptions);
+  }
+
+  async findById(id: string, query: FindCardByIdQueryDto): Promise<Card> {
+    const deck = await this._validateAndGetDeckIfValid(query.deckId);
+    const card = await this._cardRepository.findByIdAndDeckId(id, deck.id);
+
+    if (!card) {
+      throw new RequestException(
+        ExceptionMessage.CARD_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return card;
   }
 
   private async _validateAndGetDeckIfValid(

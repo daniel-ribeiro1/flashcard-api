@@ -16,14 +16,10 @@ import {
 } from '@/dtos/decks/deck.dto';
 import { DeckService } from '@/services/deck.service';
 import { DeckWithCategories } from '@/types/decks/deck.type';
-import { FindDeckByIdParamsDto } from '@/dtos/decks/find-deck-by-id.dto';
 import { PaginatedResponse } from '@/utils/pagination.util';
 import { Serialize } from '@/decorators/serialize.decorator';
-import {
-  UpdateDeckBodyDto,
-  UpdateDeckParamsDto,
-} from '@/dtos/decks/update-deck.dto';
-import { DeleteDeckByIdParamsDto } from '@/dtos/decks/delete-deck-by-id.dto copy';
+import { UpdateDeckBodyDto } from '@/dtos/decks/update-deck.dto';
+import { UUIDParamDto } from '@/dtos/uuid-param.dto';
 
 @Controller('decks')
 export class DeckController {
@@ -45,16 +41,14 @@ export class DeckController {
 
   @Serialize(DeckResponseDto)
   @Get(':id')
-  findById(
-    @Param() params: FindDeckByIdParamsDto,
-  ): Promise<DeckWithCategories> {
+  findById(@Param() params: UUIDParamDto): Promise<DeckWithCategories> {
     return this._deckService.findById(params.id);
   }
 
   @Serialize(DeckResponseDto)
   @Put(':id')
   update(
-    @Param() params: UpdateDeckParamsDto,
+    @Param() params: UUIDParamDto,
     @Body() body: UpdateDeckBodyDto,
   ): Promise<DeckWithCategories> {
     return this._deckService.update(params.id, body);
@@ -62,9 +56,7 @@ export class DeckController {
 
   @Serialize(DeckResponseDto)
   @Delete(':id')
-  delete(
-    @Param() params: DeleteDeckByIdParamsDto,
-  ): Promise<DeckWithCategories> {
+  delete(@Param() params: UUIDParamDto): Promise<DeckWithCategories> {
     return this._deckService.delete(params.id);
   }
 }

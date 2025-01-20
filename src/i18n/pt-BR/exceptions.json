@@ -1,5 +1,6 @@
 {
   "ACCESS_TOKEN_NOT_FOUND": "Token de acesso não encontrado.",
+  "CARD_NOT_FOUND": "Card não encontrado.",
   "CATEGORY_NOT_FOUND": "Categoria não encontrada.",
   "DECK_NOT_FOUND": "Deck não encontrado.",
   "EMAIL_ALREADY_EXISTS": "Email já cadastrado.",
