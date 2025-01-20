@@ -37,7 +37,7 @@ export class I18nValidationExceptionFilter implements ExceptionFilter {
       const { property, constraints, children } = error;
       const propertyErrors: string[] = [];
 
-      if (children.length > 0) {
+      if (children && children.length > 0) {
         const groupedErrorsChildren = this._groupErrorsFromException({
           errors: children,
         });
@@ -56,7 +56,12 @@ export class I18nValidationExceptionFilter implements ExceptionFilter {
         const validation = constraints[constraintKey].split('|');
 
         if (validation.length === 1) {
-          propertyErrors.push(validation[0]);
+          propertyErrors.push(
+            this._i18nService.t(validation[0], {
+              lang: I18nContext.current().lang,
+            }),
+          );
+
           continue;
         }
 

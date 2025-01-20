@@ -1,7 +1,21 @@
 import {
   OrderByOptions,
   PaginatedResponseOptions,
+  PaginationOptions,
 } from '@/types/pagination.type';
+
+export function paginateQuery<T>(paginationOptions: PaginationOptions<T>): {
+  skip: number;
+  take: number;
+  orderBy: OrderByOptions<T> | OrderByOptions<T>[];
+} {
+  return {
+    skip:
+      paginationOptions.page * paginationOptions.take - paginationOptions.take,
+    take: paginationOptions.take,
+    orderBy: orderByOptions(paginationOptions.orderBy),
+  };
+}
 
 export function orderByOptions<T>(
   options?: OrderByOptions<T>,

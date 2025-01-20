@@ -9,6 +9,9 @@ import { RequestContextService } from './request-context.service';
 import { RequestContextKey } from '@/enum/request-context.enum';
 import { RequestException } from '@/exceptions/request.exception';
 import { ExceptionMessage } from '@/enum/exceptions-message';
+import { PaginatedResponse } from '@/utils/pagination.util';
+import { FindAllCardsQueryDto } from '@/dtos/cards/find-all-cards.dto';
+import { DeckWithCategories } from '@/types/decks/deck.type';
 
 @Injectable()
 export class CardService {
@@ -19,18 +22,8 @@ export class CardService {
   ) {}
 
   async create(body: CreateCardBodyDto): Promise<Card> {
-    const user = this._requestContextService.get(RequestContextKey.USER);
-    const deck = await this._deckRepository.findByIdAndUserId(
-      body.deckId,
-      user.id,
-    );
+    await this._validateAndGetDeckIfValid(body.deckId);
 
-    if (!deck) {
-      throw new RequestException(
-        ExceptionMessage.DECK_NOT_FOUND,
-        HttpStatus.NOT_FOUND,
-      );
-    }
     const level = this._getCardLevel();
     const revisionDate = this._getNextRevisionDate(level);
 
@@ -39,6 +32,31 @@ export class CardService {
       level,
       revisionDate,
     });
+  }
+
+  async findAll({
+    deckId,
+    ...paginationOptions
+  }: FindAllCardsQueryDto): Promise<PaginatedResponse<Card>> {
+    await this._validateAndGetDeckIfValid(deckId);
+
+    return this._cardRepository.findAllByDeck(deckId, paginationOptions);
+  }
+
+  private async _validateAndGetDeckIfValid(
+    deckId: string,
+  ): Promise<DeckWithCategories> {
+    const user = this._requestContextService.get(RequestContextKey.USER);
+    const deck = await this._deckRepository.findByIdAndUserId(deckId, user.id);
+
+    if (!deck) {
+      throw new RequestException(
+        ExceptionMessage.DECK_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return deck;
   }
 
   /**

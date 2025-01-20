@@ -5,6 +5,7 @@ export const ValidationMessage = {
   IS_NUMBER: 'validations.IS_NUMBER',
   IS_STRING: 'validations.IS_STRING',
   IS_UUID: 'validations.IS_UUID',
+  IS_JSON: 'validations.IS_JSON',
   MAX_VALUE: (number: number) =>
     `validations.MAX_VALUE|${JSON.stringify({ number })}`,
   MIN_VALUE: (number: number) =>
