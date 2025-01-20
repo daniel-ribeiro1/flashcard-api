@@ -96,4 +96,18 @@ export class DeckService {
       categories,
     });
   }
+
+  async delete(id: string) {
+    const user = this._requestContextService.get(RequestContextKey.USER);
+    const deck = await this._deckRepository.findByIdAndUserId(id, user.id);
+
+    if (!deck) {
+      throw new RequestException(
+        ExceptionMessage.DECK_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return this._deckRepository.hardDelete(deck.id);
+  }
 }

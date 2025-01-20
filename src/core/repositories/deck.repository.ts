@@ -1,4 +1,4 @@
-import { Deck } from '@prisma/client';
+import { Category, Deck } from '@prisma/client';
 import {
   DeckWithCategories,
   DeckWithCategoriesPaginationOptions,
@@ -38,7 +38,7 @@ export class DeckRepository {
   }
 
   async findById(id: string): Promise<DeckWithCategories> {
-    const deckWithCategories = await this._prismaService.deck.findUnique({
+    const deck = await this._prismaService.deck.findUnique({
       include: {
         deckCategories: {
           include: {
@@ -49,14 +49,7 @@ export class DeckRepository {
       where: { id },
     });
 
-    if (!deckWithCategories) return null;
-
-    return {
-      ...removeProperties(deckWithCategories, ['deckCategories']),
-      categories: deckWithCategories.deckCategories.map(
-        (deckCategory) => deckCategory.category,
-      ),
-    };
+    return this._mapDeckWithCategories(deck);
   }
 
   async findAllByUser(
@@ -85,12 +78,9 @@ export class DeckRepository {
       where: { authorId: userId },
     });
 
-    const deckWithCategories: DeckWithCategories[] = decks.map((deck) => ({
-      ...removeProperties(deck, ['deckCategories']),
-      categories: deck.deckCategories.map(
-        (deckCategory) => deckCategory.category,
-      ),
-    }));
+    const deckWithCategories: DeckWithCategories[] = decks.map(
+      this._mapDeckWithCategories,
+    );
 
     return new PaginatedResponse(deckWithCategories, {
       page: paginationOptions.page,
@@ -114,14 +104,7 @@ export class DeckRepository {
       },
     });
 
-    if (!deck) return null;
-
-    return {
-      ...removeProperties(deck, ['deckCategories']),
-      categories: deck.deckCategories.map(
-        (deckCategory) => deckCategory.category,
-      ),
-    };
+    return this._mapDeckWithCategories(deck);
   }
 
   async update(
@@ -159,5 +142,33 @@ export class DeckRepository {
     });
 
     return this.findById(id);
+  }
+
+  async hardDelete(id: string): Promise<DeckWithCategories> {
+    const deck = await this._prismaService.deck.delete({
+      where: { id },
+      include: {
+        deckCategories: {
+          include: {
+            category: true,
+          },
+        },
+      },
+    });
+
+    return this._mapDeckWithCategories(deck);
+  }
+
+  private _mapDeckWithCategories(
+    deck: (Deck & { deckCategories: { category: Category }[] }) | null,
+  ): DeckWithCategories | null {
+    if (!deck) return null;
+
+    return {
+      ...removeProperties(deck, ['deckCategories']),
+      categories: deck.deckCategories.map(
+        (deckCategory) => deckCategory.category,
+      ),
+    };
   }
 }

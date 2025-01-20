@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { CreateDeckBodyDto } from '@/dtos/decks/create-deck.dto';
 import {
   DeckResponseDto,
@@ -14,6 +23,7 @@ import {
   UpdateDeckBodyDto,
   UpdateDeckParamsDto,
 } from '@/dtos/decks/update-deck.dto';
+import { DeleteDeckByIdParamsDto } from '@/dtos/decks/delete-deck-by-id.dto copy';
 
 @Controller('decks')
 export class DeckController {
@@ -48,5 +58,13 @@ export class DeckController {
     @Body() body: UpdateDeckBodyDto,
   ): Promise<DeckWithCategories> {
     return this._deckService.update(params.id, body);
+  }
+
+  @Serialize(DeckResponseDto)
+  @Delete(':id')
+  delete(
+    @Param() params: DeleteDeckByIdParamsDto,
+  ): Promise<DeckWithCategories> {
+    return this._deckService.delete(params.id);
   }
 }
