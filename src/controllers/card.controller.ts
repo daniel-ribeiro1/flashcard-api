@@ -6,10 +6,11 @@ import {
 import { CreateCardBodyDto } from '@/dtos/cards/create-card.dto';
 import { FindAllCardsQueryDto } from '@/dtos/cards/find-all-cards.dto';
 import { FindCardByIdQueryDto } from '@/dtos/cards/find-card-by-id.dto';
+import { UpdateCardBodyDto } from '@/dtos/cards/update-card.dto';
 import { UUIDParamDto } from '@/dtos/uuid-param.dto';
 import { CardService } from '@/services/card.service';
 import { PaginatedResponse } from '@/utils/pagination.util';
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { Card } from '@prisma/client';
 
 @Controller('cards')
@@ -37,5 +38,14 @@ export class CardController {
     @Query() query: FindCardByIdQueryDto,
   ): Promise<Card> {
     return this._cardService.findById(params.id, query);
+  }
+
+  @Serialize(CardResponseDto)
+  @Put(':id')
+  update(
+    @Param() params: UUIDParamDto,
+    @Body() body: UpdateCardBodyDto,
+  ): Promise<Card> {
+    return this._cardService.update(params.id, body);
   }
 }

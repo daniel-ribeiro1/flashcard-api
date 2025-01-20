@@ -53,32 +53,14 @@ export class DeckService {
   }
 
   async findById(id: string): Promise<DeckWithCategories> {
-    const user = this._requestContextService.get(RequestContextKey.USER);
-    const deck = await this._deckRepository.findByIdAndUserId(id, user.id);
-
-    if (!deck) {
-      throw new RequestException(
-        ExceptionMessage.DECK_NOT_FOUND,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    return deck;
+    return this.validateAndGetDeckIfValid(id);
   }
 
   async update(
     id: string,
     body: UpdateDeckBodyDto,
   ): Promise<DeckWithCategories> {
-    const user = this._requestContextService.get(RequestContextKey.USER);
-    const deck = await this._deckRepository.findByIdAndUserId(id, user.id);
-
-    if (!deck) {
-      throw new RequestException(
-        ExceptionMessage.DECK_NOT_FOUND,
-        HttpStatus.NOT_FOUND,
-      );
-    }
+    const deck = await this.validateAndGetDeckIfValid(id);
 
     let categories: Category[];
 
@@ -88,7 +70,7 @@ export class DeckService {
       );
     }
 
-    return this._deckRepository.update(id, {
+    return this._deckRepository.update(deck.id, {
       title: body.title,
       description: body.description,
       categories,
@@ -96,8 +78,14 @@ export class DeckService {
   }
 
   async delete(id: string) {
+    const deck = await this.validateAndGetDeckIfValid(id);
+
+    return this._deckRepository.hardDelete(deck.id);
+  }
+
+  async validateAndGetDeckIfValid(deckId: string): Promise<DeckWithCategories> {
     const user = this._requestContextService.get(RequestContextKey.USER);
-    const deck = await this._deckRepository.findByIdAndUserId(id, user.id);
+    const deck = await this._deckRepository.findByIdAndUserId(deckId, user.id);
 
     if (!deck) {
       throw new RequestException(
@@ -106,6 +94,6 @@ export class DeckService {
       );
     }
 
-    return this._deckRepository.hardDelete(deck.id);
+    return deck;
   }
 }

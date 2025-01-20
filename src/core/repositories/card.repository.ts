@@ -48,4 +48,13 @@ export class CardRepository {
       },
     });
   }
+
+  update(id: string, body: Pick<Card, 'front' | 'back'>): Promise<Card> {
+    return this._prisma.card.update({
+      where: {
+        id,
+      },
+      data: body,
+    });
+  }
 }
