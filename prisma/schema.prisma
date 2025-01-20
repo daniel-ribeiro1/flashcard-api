@@ -14,64 +14,66 @@ datasource db {
 }
 
 model User {
-  id String @id @db.Char(36) @default(uuid())
-  firstName String @db.VarChar(255)
-  lastName String @db.VarChar(255)
-  picture String? 
-  email String @db.VarChar(255) @unique 
-  password String @db.VarChar(255)
-  deleted Boolean @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                String     @id @default(uuid()) @db.Char(36)
+  firstName         String     @db.VarChar(255)
+  lastName          String     @db.VarChar(255)
+  picture           String?
+  email             String     @unique @db.VarChar(255)
+  password          String     @db.VarChar(255)
+  deleted           Boolean    @default(false)
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
   // Relations
-  decks Deck[]
+  decks             Deck[]
   createdCategories Category[]
 }
 
 model Deck {
-  id String @db.Char(36) @id @default(uuid())
-  title String @db.VarChar(255)
-  description String? 
-  deleted Boolean @default(false)
-  authorId String @db.Char(36)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String         @id @default(uuid()) @db.Char(36)
+  title          String         @db.VarChar(255)
+  description    String?
+  deleted        Boolean        @default(false)
+  authorId       String         @db.Char(36)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
   // Relations
-  cards Card[]
+  cards          Card[]
   deckCategories DeckCategory[]
-  author User @relation(fields: [authorId], references: [id])
+  author         User           @relation(fields: [authorId], references: [id])
 }
 
 model Card {
-  id String @db.Char(36) @id @default(uuid())
-  front String @db.VarChar(255)
-  back String @db.VarChar(255)
+  id           String   @id @default(uuid()) @db.Char(36)
+  front        String   @db.VarChar(255)
+  back         String   @db.VarChar(255)
   revisionDate DateTime
-  deleted Boolean @default(false)
-  deckId String @db.Char(36)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  level        Int
+  deleted      Boolean  @default(false)
+  deckId       String   @db.Char(36)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
   // Relations
-  deck Deck @relation(fields: [deckId], references: [id])
+  deck         Deck     @relation(fields: [deckId], references: [id])
 }
 
 model Category {
-  id Int @id @db.Integer @default(autoincrement())
-  name String @db.VarChar(255)
-  deleted Boolean @default(false)
-  authorId String @db.Char(36)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             Int            @id @default(autoincrement()) @db.Integer
+  name           String         @db.VarChar(255)
+  deleted        Boolean        @default(false)
+  authorId       String         @db.Char(36)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
   // Relations
   deckCategories DeckCategory[]
-  createdBy User @relation(fields: [authorId], references: [id])
+  createdBy      User           @relation(fields: [authorId], references: [id])
 }
 
 model DeckCategory {
-  deckId String @db.Char(36)
-  categoryId Int @db.Integer
-  @@id([deckId, categoryId])
+  deckId     String   @db.Char(36)
+  categoryId Int      @db.Integer
   // Relations
-  deck Deck @relation(fields: [deckId], references: [id], onDelete: Cascade)
-  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  deck       Deck     @relation(fields: [deckId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([deckId, categoryId])
 }

@@ -32,6 +32,7 @@ CREATE TABLE "Card" (
     "front" VARCHAR(255) NOT NULL,
     "back" VARCHAR(255) NOT NULL,
     "revisionDate" TIMESTAMP(3) NOT NULL,
+    "level" INTEGER NOT NULL,
     "deleted" BOOLEAN NOT NULL DEFAULT false,
     "deckId" CHAR(36) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
