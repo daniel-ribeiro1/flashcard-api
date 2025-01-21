@@ -13,6 +13,7 @@ import { FindAllCardsQueryDto } from '@/dtos/cards/find-all-cards.dto';
 import { FindCardByIdQueryDto } from '@/dtos/cards/find-card-by-id.dto';
 import { UpdateCardBodyDto } from '@/dtos/cards/update-card.dto';
 import { DeckService } from './deck.service';
+import { RequestContextKey } from '@/enum/request-context.enum';
 
 @Injectable()
 export class CardService {
@@ -24,6 +25,7 @@ export class CardService {
   ) {}
 
   async create(body: CreateCardBodyDto): Promise<Card> {
+    const user = this._requestContextService.get(RequestContextKey.USER);
     await this._deckService.validateAndGetDeckIfValid(body.deckId);
 
     const level = this._getCardLevel();
@@ -33,6 +35,7 @@ export class CardService {
       ...body,
       level,
       revisionDate,
+      authorId: user.id,
     });
   }
 
@@ -58,6 +61,20 @@ export class CardService {
     const card = await this.validateAndGetCardIfValid(id, deck);
 
     return this._cardRepository.update(card.id, body);
+  }
+
+  async delete(id: string): Promise<Card> {
+    const user = this._requestContextService.get(RequestContextKey.USER);
+    const card = await this._cardRepository.findByIdAndAuthorId(id, user.id);
+
+    if (!card) {
+      throw new RequestException(
+        ExceptionMessage.CARD_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return this._cardRepository.hardDelete(id);
   }
 
   async validateAndGetCardIfValid(id: string, deck: Deck): Promise<Card> {

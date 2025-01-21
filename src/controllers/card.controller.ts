@@ -10,7 +10,16 @@ import { UpdateCardBodyDto } from '@/dtos/cards/update-card.dto';
 import { UUIDParamDto } from '@/dtos/uuid-param.dto';
 import { CardService } from '@/services/card.service';
 import { PaginatedResponse } from '@/utils/pagination.util';
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { Card } from '@prisma/client';
 
 @Controller('cards')
@@ -47,5 +56,11 @@ export class CardController {
     @Body() body: UpdateCardBodyDto,
   ): Promise<Card> {
     return this._cardService.update(params.id, body);
+  }
+
+  @Serialize(CardResponseDto)
+  @Delete(':id')
+  delete(@Param() params: UUIDParamDto): Promise<Card> {
+    return this._cardService.delete(params.id);
   }
 }

@@ -9,7 +9,10 @@ export class CardRepository {
   constructor(private readonly _prisma: PrismaService) {}
 
   create(
-    card: Pick<Card, 'front' | 'back' | 'revisionDate' | 'level' | 'deckId'>,
+    card: Pick<
+      Card,
+      'front' | 'back' | 'revisionDate' | 'level' | 'deckId' | 'authorId'
+    >,
   ): Promise<Card> {
     return this._prisma.card.create({
       data: card,
@@ -40,6 +43,15 @@ export class CardRepository {
     });
   }
 
+  findByIdAndAuthorId(id: string, authorId: string): Promise<Card> {
+    return this._prisma.card.findFirst({
+      where: {
+        id,
+        authorId,
+      },
+    });
+  }
+
   async findByIdAndDeckId(id: string, deckId: string): Promise<Card> {
     return this._prisma.card.findFirst({
       where: {
@@ -55,6 +67,14 @@ export class CardRepository {
         id,
       },
       data: body,
+    });
+  }
+
+  hardDelete(id: string): Promise<Card> {
+    return this._prisma.card.delete({
+      where: {
+        id,
+      },
     });
   }
 }
