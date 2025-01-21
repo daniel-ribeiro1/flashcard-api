@@ -11,7 +11,7 @@ export class ReviewController {
 
   @Serialize(CardResponseDto)
   @Get()
-  review(@Query() query: ReviewQueryDto): Promise<Card> {
-    return this._reviewService.findFirstCardToReviewIntoDeck(query);
+  findNextCardToReviewIntoDeck(@Query() query: ReviewQueryDto): Promise<Card> {
+    return this._reviewService.findNextCardToReviewIntoDeck(query);
   }
 }

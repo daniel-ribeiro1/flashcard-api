@@ -61,7 +61,7 @@ export class CardRepository {
     });
   }
 
-  async findFirstToReviewIntoDeck(deckId: string): Promise<Card> {
+  async findNextToReviewIntoDeck(deckId: string): Promise<Card> {
     return this._prisma.card.findFirst({
       where: {
         deckId,

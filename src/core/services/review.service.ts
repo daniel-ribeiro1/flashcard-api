@@ -11,10 +11,10 @@ export class ReviewService {
     private readonly _deckService: DeckService,
   ) {}
 
-  async findFirstCardToReviewIntoDeck(query: ReviewQueryDto): Promise<Card> {
+  async findNextCardToReviewIntoDeck(query: ReviewQueryDto): Promise<Card> {
     await this._deckService.validateAndGetDeckIfValid(query.deckId);
 
-    const card = await this._cardRepository.findFirstToReviewIntoDeck(
+    const card = await this._cardRepository.findNextToReviewIntoDeck(
       query.deckId,
     );
 
