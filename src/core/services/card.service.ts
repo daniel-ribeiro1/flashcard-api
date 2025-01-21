@@ -1,16 +1,14 @@
 import { LEVEL_MAPPER } from '@/constants/card-level.constant';
 import { CreateCardBodyDto } from '@/dtos/cards/create-card.dto';
 import { CardRepository } from '@/repositories/card.repository';
-import { DeckRepository } from '@/repositories/deck.repository';
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { Card, Deck } from '@prisma/client';
+import { Card } from '@prisma/client';
 import { addDays } from 'date-fns';
 import { RequestContextService } from './request-context.service';
 import { RequestException } from '@/exceptions/request.exception';
 import { ExceptionMessage } from '@/enum/exceptions-message';
 import { PaginatedResponse } from '@/utils/pagination.util';
 import { FindAllCardsQueryDto } from '@/dtos/cards/find-all-cards.dto';
-import { FindCardByIdQueryDto } from '@/dtos/cards/find-card-by-id.dto';
 import { UpdateCardBodyDto } from '@/dtos/cards/update-card.dto';
 import { DeckService } from './deck.service';
 import { RequestContextKey } from '@/enum/request-context.enum';
@@ -19,7 +17,6 @@ import { RequestContextKey } from '@/enum/request-context.enum';
 export class CardService {
   constructor(
     private readonly _cardRepository: CardRepository,
-    private readonly _deckRepository: DeckRepository,
     private readonly _deckService: DeckService,
     private readonly _requestContextService: RequestContextService,
   ) {}
@@ -48,37 +45,27 @@ export class CardService {
     return this._cardRepository.findAllByDeck(deckId, paginationOptions);
   }
 
-  async findById(id: string, query: FindCardByIdQueryDto): Promise<Card> {
-    const deck = await this._deckService.validateAndGetDeckIfValid(
-      query.deckId,
-    );
-
-    return this.validateAndGetCardIfValid(id, deck);
+  async findById(id: string): Promise<Card> {
+    return this.validateAndGetCardIfValid(id);
   }
 
   async update(id: string, body: UpdateCardBodyDto): Promise<Card> {
-    const deck = await this._deckService.validateAndGetDeckIfValid(body.deckId);
-    const card = await this.validateAndGetCardIfValid(id, deck);
+    await this._deckService.validateAndGetDeckIfValid(body.deckId);
+
+    const card = await this.validateAndGetCardIfValid(id);
 
     return this._cardRepository.update(card.id, body);
   }
 
   async delete(id: string): Promise<Card> {
-    const user = this._requestContextService.get(RequestContextKey.USER);
-    const card = await this._cardRepository.findByIdAndAuthorId(id, user.id);
+    const card = this.validateAndGetCardIfValid(id);
 
-    if (!card) {
-      throw new RequestException(
-        ExceptionMessage.CARD_NOT_FOUND,
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    return this._cardRepository.hardDelete(id);
+    return this._cardRepository.hardDelete((await card).id);
   }
 
-  async validateAndGetCardIfValid(id: string, deck: Deck): Promise<Card> {
-    const card = await this._cardRepository.findByIdAndDeckId(id, deck.id);
+  async validateAndGetCardIfValid(id: string): Promise<Card> {
+    const user = this._requestContextService.get(RequestContextKey.USER);
+    const card = await this._cardRepository.findByIdAndAuthorId(id, user.id);
 
     if (!card) {
       throw new RequestException(

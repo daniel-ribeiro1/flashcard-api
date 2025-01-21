@@ -5,7 +5,6 @@ import {
 } from '@/dtos/cards/card.dto';
 import { CreateCardBodyDto } from '@/dtos/cards/create-card.dto';
 import { FindAllCardsQueryDto } from '@/dtos/cards/find-all-cards.dto';
-import { FindCardByIdQueryDto } from '@/dtos/cards/find-card-by-id.dto';
 import { UpdateCardBodyDto } from '@/dtos/cards/update-card.dto';
 import { UUIDParamDto } from '@/dtos/uuid-param.dto';
 import { CardService } from '@/services/card.service';
@@ -42,11 +41,8 @@ export class CardController {
 
   @Serialize(CardResponseDto)
   @Get(':id')
-  findById(
-    @Param() params: UUIDParamDto,
-    @Query() query: FindCardByIdQueryDto,
-  ): Promise<Card> {
-    return this._cardService.findById(params.id, query);
+  findById(@Param() params: UUIDParamDto): Promise<Card> {
+    return this._cardService.findById(params.id);
   }
 
   @Serialize(CardResponseDto)
