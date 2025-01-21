@@ -61,6 +61,18 @@ export class CardRepository {
     });
   }
 
+  async findFirstToReviewIntoDeck(deckId: string): Promise<Card> {
+    return this._prisma.card.findFirst({
+      where: {
+        deckId,
+        revisionDate: {
+          lte: new Date(),
+        },
+      },
+      orderBy: [{ revisionDate: 'asc' }, { updatedAt: 'asc' }],
+    });
+  }
+
   update(id: string, body: Pick<Card, 'front' | 'back'>): Promise<Card> {
     return this._prisma.card.update({
       where: {

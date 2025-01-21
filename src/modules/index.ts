@@ -3,6 +3,7 @@ import { CardModule } from './card.module';
 import { CategoryModule } from './category.module';
 import { CommonModule } from './common.module';
 import { DeckModule } from './deck.module';
+import { ReviewModule } from './review.module';
 import { UserModule } from './user.module';
 
 export default [
@@ -11,5 +12,6 @@ export default [
   CategoryModule,
   CommonModule,
   DeckModule,
+  ReviewModule,
   UserModule,
 ];
