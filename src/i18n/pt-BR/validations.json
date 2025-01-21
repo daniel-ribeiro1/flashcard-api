@@ -1,4 +1,5 @@
 {
+  "IS_BOOLEAN": "O campo deve ser um booleano.",
   "IS_EMAIL": "O campo deve ser um email.",
   "IS_ENUM": "O campo deve corresponder a um dos seguintes valores: [{constraints.1}].",
   "IS_JSON": "O campo deve ser um JSON.",

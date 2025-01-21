@@ -3,7 +3,7 @@ import { CreateCardBodyDto } from '@/dtos/cards/create-card.dto';
 import { CardRepository } from '@/repositories/card.repository';
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { Card } from '@prisma/client';
-import { addDays } from 'date-fns';
+import { addDays, isBefore, isSameDay } from 'date-fns';
 import { RequestContextService } from './request-context.service';
 import { RequestException } from '@/exceptions/request.exception';
 import { ExceptionMessage } from '@/enum/exceptions-message';
@@ -25,8 +25,8 @@ export class CardService {
     const user = this._requestContextService.get(RequestContextKey.USER);
     await this._deckService.validateAndGetDeckIfValid(body.deckId);
 
-    const level = this._getCardLevel();
-    const revisionDate = this._getNextRevisionDate(level);
+    const level = this.getCardLevel();
+    const revisionDate = this.getNextRevisionDate(level);
 
     return this._cardRepository.create({
       ...body,
@@ -78,7 +78,7 @@ export class CardService {
   }
 
   /**
-   *  @param {boolean|undefined} nextLevel - Ir para o próximo nível?
+   *  @param {boolean|undefined} isTrue - Acertou na revisão do card?
    *  @param {Card|undefined} card - Card
    *
    *  @description
@@ -91,10 +91,23 @@ export class CardService {
    *
    *  @returns {number} - Nível do card
    */
-  private _getCardLevel(nextLevel?: boolean, card?: Card) {
+  getCardLevel(isTrue?: boolean, card?: Card): number {
     if (!card) return 1;
 
-    if (!nextLevel) {
+    /**
+     *  Caso a data atual seja inferior a data de revisão,
+     * o nível do card não será alterado.
+     */
+    const today = new Date();
+
+    if (
+      !isSameDay(today, card.revisionDate) &&
+      isBefore(today, card.revisionDate)
+    ) {
+      return card.level;
+    }
+
+    if (!isTrue) {
       return card.level > 1 ? card.level - 1 : 1;
     }
 
@@ -114,7 +127,7 @@ export class CardService {
    *
    *  @returns {Date} - Próxima data de revisão
    */
-  private _getNextRevisionDate(level: number): Date {
+  getNextRevisionDate(level: number): Date {
     const today = new Date();
     const daysToAdd = LEVEL_MAPPER[level - 1];
 

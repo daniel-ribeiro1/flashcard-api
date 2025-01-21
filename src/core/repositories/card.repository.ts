@@ -73,7 +73,10 @@ export class CardRepository {
     });
   }
 
-  update(id: string, body: Pick<Card, 'front' | 'back'>): Promise<Card> {
+  update(
+    id: string,
+    body: Partial<Pick<Card, 'front' | 'back' | 'revisionDate' | 'level'>>,
+  ): Promise<Card> {
     return this._prisma.card.update({
       where: {
         id,
