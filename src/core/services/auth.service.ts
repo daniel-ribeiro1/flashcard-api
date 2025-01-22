@@ -52,10 +52,13 @@ export class AuthService {
 
     const payload = {
       sub: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
     };
 
     return {
-      access_token: this._jwtService.sign(payload, {
+      accessToken: this._jwtService.sign(payload, {
         secret: this._configService.getOrThrow(
           EnvironmentProprety.ACCESS_TOKEN_SECRET,
         ),
@@ -63,7 +66,7 @@ export class AuthService {
           EnvironmentProprety.ACCESS_TOKEN_EXPIRATION_TIME,
         ),
       }),
-      refresh_token: this._jwtService.sign(payload, {
+      refreshToken: this._jwtService.sign(payload, {
         secret: this._configService.getOrThrow(
           EnvironmentProprety.REFRESH_TOKEN_SECRET,
         ),
