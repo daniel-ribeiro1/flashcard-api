@@ -65,9 +65,16 @@ export class CardRepository {
     return this._prisma.card.findFirst({
       where: {
         deckId,
-        revisionDate: {
-          lte: new Date(),
-        },
+        OR: [
+          {
+            revisionDate: {
+              lte: new Date(),
+            },
+          },
+          {
+            iGotItRight: false,
+          },
+        ],
       },
       orderBy: [{ revisionDate: 'asc' }, { updatedAt: 'asc' }],
     });
@@ -75,7 +82,9 @@ export class CardRepository {
 
   update(
     id: string,
-    body: Partial<Pick<Card, 'front' | 'back' | 'revisionDate' | 'level'>>,
+    body: Partial<
+      Pick<Card, 'front' | 'back' | 'revisionDate' | 'level' | 'iGotItRight'>
+    >,
   ): Promise<Card> {
     return this._prisma.card.update({
       where: {

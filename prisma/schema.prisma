@@ -50,6 +50,7 @@ model Card {
   revisionDate DateTime
   level        Int
   deleted      Boolean  @default(false)
+  iGotItRight  Boolean  @default(false)
   deckId       String   @db.Char(36)
   authorId     String   @db.Char(36)
   createdAt    DateTime @default(now())

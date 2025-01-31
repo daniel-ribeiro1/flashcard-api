@@ -11,7 +11,13 @@ export class CardResponseDto
   implements
     Pick<
       Card,
-      'id' | 'front' | 'back' | 'revisionDate' | 'createdAt' | 'updatedAt'
+      | 'id'
+      | 'front'
+      | 'back'
+      | 'revisionDate'
+      | 'iGotItRight'
+      | 'createdAt'
+      | 'updatedAt'
     >
 {
   @Expose()
@@ -25,6 +31,9 @@ export class CardResponseDto
 
   @Expose()
   revisionDate: Date;
+
+  @Expose()
+  iGotItRight: boolean;
 
   @Expose()
   createdAt: Date;

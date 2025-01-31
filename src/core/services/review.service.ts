@@ -31,12 +31,13 @@ export class ReviewService {
 
     const card = await this._cardService.validateAndGetCardIfValid(body.cardId);
 
-    const nextLevel = this._cardService.getCardLevel(body.isTrue, card);
+    const nextLevel = this._cardService.getCardLevel(body.iGotItRight, card);
     const nextRevisionDate = this._cardService.getNextRevisionDate(nextLevel);
 
     return this._cardRepository.update(card.id, {
       level: nextLevel,
       revisionDate: nextRevisionDate,
+      iGotItRight: body.iGotItRight,
     });
   }
 }

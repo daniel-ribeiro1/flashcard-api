@@ -13,5 +13,5 @@ export class ReviewCardBodyDto {
 
   @IsBooleanI18n()
   @IsNotEmptyI18n()
-  isTrue: boolean;
+  iGotItRight: boolean;
 }
